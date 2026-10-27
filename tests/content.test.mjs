@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {wars,features,quizzes} from '../dist/content.js';
+import {countries} from '../dist/map-data.js';
+import {filterWars} from '../dist/core.mjs';
+test('curated records have usable links and valid event dates and locations',()=>{const ids=new Set();for(const w of wars){assert(!ids.has(w.id));ids.add(w.id);assert(w.start<=w.end);assert(w.url.startsWith('https://'));assert(w.events.length>=3);for(const e of w.events){assert(e.date>=w.start&&e.date<=w.end);assert(e.pos.length===2&&e.pos.every(Number.isFinite));assert(Math.abs(e.pos[0])<=180&&Math.abs(e.pos[1])<=90)}for(const id of w.countries)assert(countries.some(c=>c.id===id),`${w.id}: missing ${id}`)}});
+test('quiz answers and review targets resolve',()=>{for(const q of quizzes){assert(q.answer>=0&&q.answer<q.options.length);assert(q.explanation.length>10);assert([...wars,...features].some(x=>x.id===q.ref))}});
+test('search and region filters operate together and timeline handles quiet years',()=>{assert.equal(filterWars(wars,{year:1919}).length,0);assert.equal(filterWars(wars,{query:'朝鲜',region:'亚洲',year:1953})[0].id,'korea');assert.equal(filterWars(wars,{query:'朝鲜',region:'欧洲'}).length,0)});
+test('map has 177 unique usable feature paths',()=>{assert.equal(countries.length,177);assert.equal(new Set(countries.map(c=>c.id)).size,177);for(const c of countries){assert(c.path.startsWith('M')&&c.path.endsWith('Z'));assert(!c.path.includes('NaN'));assert(c.name&&c.region)}});
+test('country search recognizes everyday Chinese names and formal names',async()=>{const core=await import('../dist/core.mjs');assert.equal(typeof core.filterPlaces,'function');assert.equal(core.filterPlaces(countries,{query:'中国'})[0].id,'CHN');assert.equal(core.filterPlaces(countries,{query:'美国'})[0].id,'USA');assert.equal(core.filterPlaces(countries,{query:'中华人民共和国'})[0].id,'CHN');assert.equal(core.filterPlaces(countries,{query:'beijing'}).length,0);assert.equal(core.filterPlaces(countries,{query:'北京'})[0].id,'CHN')});

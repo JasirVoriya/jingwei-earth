@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jasirvoriya.github.io/jingwei-earth/sitemap.xml

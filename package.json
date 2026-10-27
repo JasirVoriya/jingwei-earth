@@ -1,0 +1,27 @@
+{
+  "name": "jingwei-earth",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "经纬：用交互式 3D 地球探索世界地理与近现代战争史",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JasirVoriya/jingwei-earth.git"
+  },
+  "homepage": "https://jasirvoriya.github.io/jingwei-earth/",
+  "keywords": [
+    "globe",
+    "geography",
+    "history",
+    "threejs",
+    "education",
+    "timeline"
+  ]
+}
